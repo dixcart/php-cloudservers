@@ -68,7 +68,7 @@ class LoadBalancer {
      */
     public function getBalancer ($balancerId)
     {
-        $this->par->_apiResource = '/loadbalancers/'. (int) $serverId;
+        $this->par->_apiResource = '/loadbalancers/'. (int) $balancerId . '.json'; // As of 25/03 API does not default to JSON on this command
         $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
         
         if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200' || $this->par->_apiResponseCode == '203')) {
