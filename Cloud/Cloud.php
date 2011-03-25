@@ -226,7 +226,7 @@ class Cloud {
                 case '401':
                     // User is no longer authorized, re-authenicate with API
                     $this->_doRequest(self::METHOD_AUTH);
-                    $this->_doRequest($method);
+                    $this->_doRequest($method, $type);
                 break;
                 case '400':
 					$resp = json_decode($this->_apiResponse, true);
