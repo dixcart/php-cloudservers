@@ -179,5 +179,23 @@ class LoadBalancer {
     }
 
     /**
+     * Retrieves all of the available balancing protocols
+     *
+     * @return mixed returns json string containing available protocol and ports or
+     * false on failure
+     */
+    public function getProtocols ()
+    {
+        $this->par->_apiResource = '/loadbalancers/protocols';
+        $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+
+        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
+           	    || $this->par->_apiResponseCode == '203')) {
+        	return $this->par->_apiResponse;
+        }
+
+        return false;
+    }
+
 
 }
