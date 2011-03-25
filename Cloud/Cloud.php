@@ -150,16 +150,16 @@ class Cloud {
 		
 		switch ($type) {
 			case self::RESOURCE_BALANCER:
-				curl_setopt($curl, CURLOPT_URL, $this->_apiBalancerUri[$this->_apiBalancerLocation].'/'.$this->_apiAccount.$this->_apiResource);
+				$strURL = $this->_apiBalancerUri[$this->_apiBalancerLocation].$this->_apiAccount.$this->_apiResource;
 				break;
 			case self::RESOURCE_STORAGE:
-				curl_setopt($curl, CURLOPT_URL, $this->_apiStorageUri.$this->_apiResource);
+				$strURL = $this->_apiStorageUri.$this->_apiResource;
 				break;
 			case self::RESOURCE_CDN:
-				curl_setopt($curl, CURLOPT_URL, $this->_apiCDNUri.$this->_apiResource);
+				$strURL = $this->_apiCDNUri.$this->_apiResource;
 				break;
 			default:
-				curl_setopt($curl, CURLOPT_URL, $this->_apiServerUri.$this->_apiResource);
+				$strURL = $this->_apiServerUri.$this->_apiResource;
 				break;
 		}
 
@@ -180,7 +180,7 @@ class Cloud {
                 $headers = array(
                     sprintf("%s: %s", 'X-Auth-User', $this->_apiUser),
                     sprintf("%s: %s", 'X-Auth-Key', $this->_apiKey));
-                curl_setopt($curl, CURLOPT_URL, $this->_apiAuthUri[$this->_apiLocation]);
+                $strURL = $this->_apiAuthUri[$this->_apiLocation];
                 curl_setopt($curl, CURLOPT_HEADERFUNCTION, array(&$this,'_requestAuth'));
             break;
             default:
@@ -190,6 +190,9 @@ class Cloud {
             break;
         }
 
+		if ($this->_enableDebug) echo "<hr>url=", $strURL, "<hr>";
+
+		curl_setopt($curl, CURLOPT_URL, $strURL);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_USERAGENT, $this->_apiAgent);
@@ -199,7 +202,6 @@ class Cloud {
         // If debug is enabled we will output CURL data to screen
         if ($this->_enableDebug) {
 			var_dump($headers);
-			var_dump($this->_apiServerUri.$this->_apiResource);
             curl_setopt($curl, CURLOPT_VERBOSE, 1);
 			echo("<hr>");
         }
