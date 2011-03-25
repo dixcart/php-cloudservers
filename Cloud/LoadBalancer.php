@@ -72,7 +72,7 @@ class LoadBalancer {
         $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
         
         if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200' || $this->par->_apiResponseCode == '203')) {
-            // Save balancer names to avoid creating dublicate servers
+            // Save balancer names to avoid creating duplicate balancers
             if (property_exists($this->par->_apiResponse, 'loadBalancers')) {
                 $this->_apiBalancers[(int) $this->par->_apiResponse->server->id] =
                     array('id' => (int) $this->par->_apiResponse->server->id,
