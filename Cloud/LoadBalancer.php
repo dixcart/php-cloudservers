@@ -179,6 +179,25 @@ class LoadBalancer {
     }
 
     /**
+     * Retrieves list of virtual IPs on a specific balancer
+     *
+     * @return mixed returns json string containing details on the Virtual IPs
+     * false on failure
+     */
+    public function getVirtualIPs ($balancerId)
+    {
+        $this->par->_apiResource = '/loadbalancers/'. $balancerId . '/virtualips.json'; // As of 25/03 API does not default to JSON on this command
+        $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+
+        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
+           	    || $this->par->_apiResponseCode == '202')) {
+        	return $this->par->_apiResponse;
+        }
+
+        return false;
+    }
+
+	/**
      * Retrieves all of the available balancing protocols
      *
      * @return mixed returns json string containing available protocol and ports or
@@ -196,6 +215,5 @@ class LoadBalancer {
 
         return false;
     }
-
 
 }
