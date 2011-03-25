@@ -112,6 +112,7 @@ class LoadBalancer {
      * @param string $name balancer name, must be unique
      * @param int $port external facing port balancer will use
      * @param string $protocol protocol for the balancer
+	 * @param string $virtualIP PUBLIC, PRIVATE or ID of existing IP
      * @return mixed returns json string of balancer's configuration or false on failure
      */
     public function createBalancer ($name, $port, $protocol, $virtualIp = "PUBLIC")
@@ -133,8 +134,8 @@ class LoadBalancer {
             }
         }
 		
-		if ($virtualIp === "PUBLIC") {
-			$Ips = array(array('type' => 'PUBLIC'));
+		if ($virtualIp === "PUBLIC" || $virtualIp === "PRIVATE") {
+			$Ips = array(array('type' => $virtualIp));
 		} else {
 			$Ips = array(array('id' => $virtualIp));
 		}
