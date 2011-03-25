@@ -133,6 +133,7 @@ class Cloud {
      * @throws Cloud_Exception
      * @return null
      */
+    public function _doRequest($method = self::METHOD_GET, $type = self::RESOURCE_SERVER)
     public function _doRequest($method = null, $type = self::RESOURCE_SERVER)
     {
         if (!$this->_apiToken && $method != self::METHOD_AUTH) {
