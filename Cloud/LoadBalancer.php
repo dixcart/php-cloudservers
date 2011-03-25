@@ -159,5 +159,25 @@ class LoadBalancer {
         return false;
     }
 
+	/**
+     * Delete Balancer
+     *
+     * @param int $balancerId id of balancer you wish to delete
+     * @return bool returns true on success or false on fail
+     */
+    public function deleteBalancer ($balancerId)
+    {
+        $this->par->_apiResource = '/loadbalancers/'. (int) $balancerId;
+        $this->par->_doRequest(Cloud::METHOD_DELETE, Cloud::RESOURCE_BALANCER);
+
+        // If server was deleted
+        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
 
 }
