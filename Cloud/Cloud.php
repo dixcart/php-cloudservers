@@ -65,6 +65,7 @@ class Cloud {
 	public $_acceptGzip;
 
     public $_enableDebug = false;
+	private $_cacheBuster = false;
 
     /**
      * Class constructor
@@ -162,6 +163,9 @@ class Cloud {
 				$strURL = $this->_apiServerUri.$this->_apiResource;
 				break;
 		}
+		
+		//Cache buster
+		if ($this->_cacheBuster) $strURL .= '?_='.time();
 
         switch ($method) {
             case self::METHOD_POST:
@@ -318,6 +322,26 @@ class Cloud {
     public function disableDebug()
     {
         $this->_enableDebug = false;
+    }
+
+    /**
+     * Enables cache buster
+     *
+     * @return null
+     */
+    public function enableCacheBuster()
+    {
+        $this->_cacheBuster = true;
+    }
+
+    /**
+     * Disable cache buster
+     *
+     * @return null
+     */
+    public function disableCacheBuster()
+    {
+        $this->_cacheBuster = false;
     }
 
 }
