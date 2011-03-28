@@ -192,6 +192,33 @@ class Cloud_LoadBalancer extends Cloud {
     }
     
     /**
+     * Adds a node to a balancer, must use newNode to define the nodes to add
+     * 
+     * @param int $balanerId ID of the balancer to add nodes to
+     * @return mixed JSON response with node details or false
+     */
+    public function addNode($balanerId) {
+        //Must have added nodes using newNode
+        if (count($this->_apiNodes) == 0) return false;
+        
+        $this->_apiResource = '/loadbalancers/'.$balanerId.'/nodes.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiJson = array ('nodes' => $this->_apiNodes);
+
+        $this->_doRequest(self::METHOD_POST, self::RESOURCE_BALANCER);
+
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
+            //Clear nodes
+            $this->_apiNodes = array();
+            return $this->_apiResponse;
+        }
+
+        return false;        
+    }
+    
+    
+    
+    
+    /**
      * Retrieves list of virtual IPs on a specific balancer
      *
      * @return mixed returns json string containing details on the Virtual IPs
