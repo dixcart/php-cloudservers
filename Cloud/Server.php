@@ -10,9 +10,7 @@
  */
 class Cloud_Server extends Cloud {
 	
-    public $par;
-
-    protected $_apiBackup = array(
+    private $_apiBackup = array(
         'weekly' => array(
                 'DISABLED',
                 'SUNDAY',
