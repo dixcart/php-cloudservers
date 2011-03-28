@@ -1,39 +1,18 @@
 <?php
-
 /**
- * PHP Cloud Server implementation for RackSpace (tm)
- *
- * THIS SOFTWARE IS PROVIDED "AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author Aleksey Korzun <al.ko@webfoundation.net>
- * @link http://github.com/AlekseyKorzun/php-cloudservers/
- * @link http://www.schematic.com
- * @author Richard Benson <richard.benson@dixcart.com> - For Load Balancers
- * @link http://www.dixcart.com/it
- * @version 0.2
- * @license bsd
+ * PHP Cloud Load Balancers implementation for RackSpace (tm)
+ * 
+ * @package phpCloudServers
  */
-
+/**
+ * Load Balancer API implementation
+ * 
+ * @package phpCloudServers
+ */
 class Cloud_LoadBalancer extends Cloud {
 	
-    protected $_apiBalancers;
-    protected $_apiNodes;
-	
-    function __construct()
-    {
-		call_user_func_array(array($this, 'parent::__construct'), func_get_args()); 
-		$this->_apiNodes = array();
-    }
+    private $_apiBalancers = array();
+    private $_apiNodes = array();
 	
     /**
      * Lists current Loadbalancers
