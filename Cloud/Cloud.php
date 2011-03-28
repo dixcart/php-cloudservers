@@ -160,32 +160,32 @@ abstract class Cloud {
             sprintf("%s: %s", 'X-Auth-Token', $this->_apiToken),
             sprintf("%s: %s", 'Content-Type', 'application/json'));
 		
-		//Enable GZip encoding
-		if ($this->_acceptGzip) curl_setopt($curl, CURLOPT_ENCODING, "gzip");
-		
-		switch ($type) {
-			case self::RESOURCE_BALANCER:
-				$strURL = $this->_apiBalancerUri[$this->_apiBalancerLocation].$this->_apiAccount.$this->_apiResource;
-				break;
-			case self::RESOURCE_STORAGE:
-				$strURL = $this->_apiStorageUri.$this->_apiResource;
-				break;
-			case self::RESOURCE_CDN:
-				$strURL = $this->_apiCDNUri.$this->_apiResource;
-				break;
-			default:
-				$strURL = $this->_apiServerUri.$this->_apiResource;
-				break;
-		}
-		
-		//Cache buster
-		if ($this->_cacheBuster) $strURL .= '?_='.time();
+        //Enable GZip encoding
+        if ($this->_acceptGzip) curl_setopt($curl, CURLOPT_ENCODING, "gzip");
+
+        switch ($type) {
+            case self::RESOURCE_BALANCER:
+                $strURL = $this->_apiBalancerUri[$this->_apiBalancerLocation].$this->_apiAccount.$this->_apiResource;
+                break;
+            case self::RESOURCE_STORAGE:
+                $strURL = $this->_apiStorageUri.$this->_apiResource;
+                break;
+            case self::RESOURCE_CDN:
+                $strURL = $this->_apiCDNUri.$this->_apiResource;
+                break;
+            default:
+                $strURL = $this->_apiServerUri.$this->_apiResource;
+                break;
+        }
+
+        //Cache buster
+        if ($this->_cacheBuster) $strURL .= '?_='.time();
 
         switch ($method) {
             case self::METHOD_POST:
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->_apiJson));
-				if ($this->_enableDebug) echo '<hr>', json_encode($this->_apiJson), '<hr>';
+		if ($this->_enableDebug) echo '<hr>', json_encode($this->_apiJson), '<hr>';
             break;
             case self::METHOD_PUT:
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -208,20 +208,20 @@ abstract class Cloud {
             break;
         }
 
-		if ($this->_enableDebug) echo "<hr>url=", $strURL, "<hr>";
+	if ($this->_enableDebug) echo "<hr>url=", $strURL, "<hr>";
 
-		curl_setopt($curl, CURLOPT_URL, $strURL);
+	curl_setopt($curl, CURLOPT_URL, $strURL);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_USERAGENT, $this->_apiAgent);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         // If debug is enabled we will output CURL data to screen
         if ($this->_enableDebug) {
-			var_dump($headers);
+            var_dump($headers);
             curl_setopt($curl, CURLOPT_VERBOSE, 1);
-			echo("<hr>");
+            echo("<hr>");
         }
 
         $this->_apiResponse = curl_exec($curl);
@@ -285,9 +285,9 @@ abstract class Cloud {
         }
         if (stripos($header, 'X-Server-Management-Url') === 0) {
             $this->_apiServerUri = trim(substr($header, strlen('X-Server-Management-Url')+1));
-			//Get the account number out
-			preg_match('/\/([0-9]+)$/', $this->_apiServerUri, $matches);
-			$this->_apiAccount = $matches[0];
+            //Get the account number out
+            preg_match('/\/([0-9]+)$/', $this->_apiServerUri, $matches);
+            $this->_apiAccount = $matches[0];
         }
         if (stripos($header, 'X-Storage-Url') === 0) {
             $this->_apiStorageUri = trim(substr($header, strlen('X-Storage-Url')+1));
@@ -295,7 +295,6 @@ abstract class Cloud {
         if (stripos($header, 'X-CDN-Management-Url') === 0) {
             $this->_apiCDNUri = trim(substr($header, strlen('X-CDN-Management-Url')+1));
         }
-		
 
         return strlen($header);
     }
