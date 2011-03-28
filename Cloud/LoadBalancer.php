@@ -47,7 +47,7 @@ class Cloud_LoadBalancer extends Cloud {
     public function getBalancer ($balancerId)
     {
         $this->_apiResource = '/loadbalancers/'. (int) $balancerId . '.json'; // As of 25/03 API does not default to JSON on this command
-        $this->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
         
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
             // Save balancer names to avoid creating duplicate balancers
@@ -126,7 +126,7 @@ class Cloud_LoadBalancer extends Cloud {
 				'virtualIps' => $Ips,
                                 'nodes' => $this->_apiNodes));
 
-        $this->_doRequest(Cloud::METHOD_POST, Cloud::RESOURCE_BALANCER);
+        $this->_doRequest(self::METHOD_POST, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             //Clear nodes
@@ -146,7 +146,7 @@ class Cloud_LoadBalancer extends Cloud {
     public function deleteBalancer ($balancerId)
     {
         $this->_apiResource = '/loadbalancers/'. (int) $balancerId;
-        $this->_doRequest(Cloud::METHOD_DELETE, Cloud::RESOURCE_BALANCER);
+        $this->_doRequest(self::METHOD_DELETE, self::RESOURCE_BALANCER);
 
         // If balancer was deleted
         if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
@@ -227,7 +227,7 @@ class Cloud_LoadBalancer extends Cloud {
     public function getVirtualIPs ($balancerId)
     {
         $this->_apiResource = '/loadbalancers/'. $balancerId . '/virtualips.json'; // As of 25/03 API does not default to JSON on this command
-        $this->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
            	    || $this->_apiResponseCode == '202')) {
@@ -246,7 +246,7 @@ class Cloud_LoadBalancer extends Cloud {
     public function getProtocols ()
     {
         $this->_apiResource = '/loadbalancers/protocols';
-        $this->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
            	    || $this->_apiResponseCode == '203')) {
