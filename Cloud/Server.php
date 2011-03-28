@@ -24,9 +24,9 @@
  * @license bsd
  */
 
-class Server {
+class Cloud_Server extends Cloud {
 	
-	public $par;
+    public $par;
 
     protected $_apiBackup = array(
         'weekly' => array(
@@ -55,7 +55,13 @@ class Server {
     protected $_apiServers = array();
     protected $_apiFiles = array();
 
-    /**
+    function __construct()
+    {
+		call_user_func_array(array($this, 'parent::__construct'), func_get_args()); 
+		$this->_apiNodes = array();
+    }
+
+	/**
      * Retrieves details regarding specific server flavor
      *
      * @param int $flavorId id of a flavor you wish to retrieve details for
@@ -64,12 +70,12 @@ class Server {
      */
     public function getFlavor ($flavorId)
     {
-        $this->par->_apiResource = '/flavors/'. (int) $flavorId;
-        $this->par->_doRequest();
+        $this->_apiResource = '/flavors/'. (int) $flavorId;
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-           	    || $this->par->_apiResponseCode == '203')) {
-        	return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+           	    || $this->_apiResponseCode == '203')) {
+        	return $this->_apiResponse;
         }
 
         return false;
@@ -83,12 +89,12 @@ class Server {
      */
     public function getFlavors ($isDetailed = false)
     {
-        $this->par->_apiResource = '/flavors' . ($isDetailed ? '/detail' : '');
-        $this->par->_doRequest();
+        $this->_apiResource = '/flavors' . ($isDetailed ? '/detail' : '');
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-           	    || $this->par->_apiResponseCode == '203')) {
-        	return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+           	    || $this->_apiResponseCode == '203')) {
+        	return $this->_apiResponse;
         }
 
         return false;
@@ -103,14 +109,14 @@ class Server {
      */
     public function createImage ($name, $serverId)
     {
-        $this->par->_apiResource = '/images';
-        $this->par->_apiJson = array ('image' => array(
+        $this->_apiResource = '/images';
+        $this->_apiJson = array ('image' => array(
                                     'serverId' => (int) $serverId,
                                     'name' => (string) $name));
-        $this->par->_doRequest(Cloud::METHOD_POST);
+        $this->_doRequest(self::METHOD_POST);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '200') {
-        	return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '200') {
+        	return $this->_apiResponse;
         }
 
         return false;
@@ -124,12 +130,12 @@ class Server {
      */
     public function getImage ($imageId)
     {
-        $this->par->_apiResource = '/images/'. (int) $imageId;
-        $this->par->_doRequest();
+        $this->_apiResource = '/images/'. (int) $imageId;
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-                || $this->par->_apiResponseCode == '203')) {
-            return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+                || $this->_apiResponseCode == '203')) {
+            return $this->_apiResponse;
         }
     }
 
@@ -140,12 +146,12 @@ class Server {
      */
     public function getImages ($isDetailed = false)
     {
-        $this->par->_apiResource = '/images' . ($isDetailed ? '/detail' : '');
-        $this->par->_doRequest();
+        $this->_apiResource = '/images' . ($isDetailed ? '/detail' : '');
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-                || $this->par->_apiResponseCode == '203')) {
-            return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+                || $this->_apiResponseCode == '203')) {
+            return $this->_apiResponse;
         }
 
         return false;
@@ -158,18 +164,18 @@ class Server {
      */
     public function getServer ($serverId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId;
-        $this->par->_doRequest();
+        $this->_apiResource = '/servers/'. (int) $serverId;
+        $this->_doRequest();
         
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200' || $this->par->_apiResponseCode == '203')) {
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
             // Save server names to avoid creating dublicate servers
-            if (property_exists($this->par->_apiResponse, 'server')) {
-                $this->_apiServers[(int) $this->par->_apiResponse->server->id] =
-                    array('id' => (int) $this->par->_apiResponse->server->id,
-                            'name' => (string) $this->par->_apiResponse->server->name);
+            if (property_exists($this->_apiResponse, 'server')) {
+                $this->_apiServers[(int) $this->_apiResponse->server->id] =
+                    array('id' => (int) $this->_apiResponse->server->id,
+                            'name' => (string) $this->_apiResponse->server->name);
             }
 
-            return $this->par->_apiResponse;
+            return $this->_apiResponse;
         }
 
         return false;
@@ -182,19 +188,19 @@ class Server {
      */
     public function getServers ($isDetailed = false)
     {
-        $this->par->_apiResource = '/servers'. ($isDetailed ? '/detail' : '');
-        $this->par->_doRequest();
+        $this->_apiResource = '/servers'. ($isDetailed ? '/detail' : '');
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200' || $this->par->_apiResponseCode == '203')) {
-            if (property_exists($this->par->_apiResponse, 'servers')) {
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
+            if (property_exists($this->_apiResponse, 'servers')) {
                 // Reset internal server array
                 $this->_apiServers = array();
-                foreach ($this->par->_apiResponse->servers as $server) {
+                foreach ($this->_apiResponse->servers as $server) {
                     $this->_apiServers[(int) $server->id]['name'] = (string) $server->name;
                 }
             }
 
-            return $this->par->_apiResponse;
+            return $this->_apiResponse;
         }
 
         return false;
@@ -202,13 +208,13 @@ class Server {
 
     public function shareServerIp ($serverId, $serverIp, $groupId, $doConfigure = false)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/ips/public/'. $serverIp;
-        $this->par->_apiJson = array ('shareIp' => array(
+        $this->_apiResource = '/servers/'. (int) $serverId .'/ips/public/'. $serverIp;
+        $this->_apiJson = array ('shareIp' => array(
                                     'sharedIpGroupId' => (int) $groupId,
                                     'configureServer' => (bool) $doConfigure));
-		$this->par->_doRequest(Cloud::METHOD_PUT);
+		$this->_doRequest(self::METHOD_PUT);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '201') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '201') {
             return true;
         }
 
@@ -223,10 +229,10 @@ class Server {
      */
     public function unshareServerIp ($serverId, $serverIp)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/ips/public/'. (string) $serverIp;
-        $this->par->_doRequest(Cloud::METHOD_DELETE);
+        $this->_apiResource = '/servers/'. (int) $serverId .'/ips/public/'. (string) $serverIp;
+        $this->_doRequest(self::METHOD_DELETE);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -243,12 +249,12 @@ class Server {
      */
     public function getServerIp ($serverId, $type = false)
     {
-       $this->par->_apiResource = '/servers/'. (int) $serverId .'/ips'. ($type ? '/'. $type : '');
-       $this->par->_doRequest();
+       $this->_apiResource = '/servers/'. (int) $serverId .'/ips'. ($type ? '/'. $type : '');
+       $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-                || $this->par->_apiResponseCode == '203')) {
-            return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+                || $this->_apiResponseCode == '203')) {
+            return $this->_apiResponse;
         }
 
         return false;
@@ -263,14 +269,14 @@ class Server {
      */
     public function addSharedIpGroup ($name, $serverId)
     {
-        $this->par->_apiResource = '/shared_ip_groups';
-        $this->par->_apiJson = array ('sharedIpGroup' => array(
+        $this->_apiResource = '/shared_ip_groups';
+        $this->_apiJson = array ('sharedIpGroup' => array(
                                     'name' => (string) $name,
                                     'server' => (int) $serverId));
-        $this->par->_doRequest(Cloud::METHOD_POST);
+        $this->_doRequest(self::METHOD_POST);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '201') {
-            return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '201') {
+            return $this->_apiResponse;
         }
 
         return false;
@@ -284,10 +290,10 @@ class Server {
      */
     public function deleteSharedIpGroup ($groupId)
     {
-        $this->par->_apiResource = '/shared_ip_groups/'. (int) $groupId;
-        $this->par->_doRequest(Cloud::METHOD_DELETE);
+        $this->_apiResource = '/shared_ip_groups/'. (int) $groupId;
+        $this->_doRequest(self::METHOD_DELETE);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '204') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '204') {
             return true;
         }
 
@@ -304,12 +310,12 @@ class Server {
      */
     public function getSharedIpGroup ($groupId)
     {
-        $this->par->_apiResource = '/shared_ip_groups/'. (int) $groupId;
-        $this->par->_doRequest();
+        $this->_apiResource = '/shared_ip_groups/'. (int) $groupId;
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-                || $this->par->_apiResponseCode == '203')) {
-            return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+                || $this->_apiResponseCode == '203')) {
+            return $this->_apiResponse;
         }
 
         return false;
@@ -323,12 +329,12 @@ class Server {
      */
     public function getSharedIpGroups ($isDetailed = false)
     {
-        $this->par->_apiResource = '/shared_ip_groups'. ($isDetailed ? '/detail' : '');
-        $this->par->_doRequest();
+        $this->_apiResource = '/shared_ip_groups'. ($isDetailed ? '/detail' : '');
+        $this->_doRequest();
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-                || $this->par->_apiResponseCode == '203')) {
-        	return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+                || $this->_apiResponseCode == '203')) {
+        	return $this->_apiResponse;
         }
 
         return false;
@@ -342,12 +348,12 @@ class Server {
      */
     public function getBackupSchedule ($serverId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/backup_schedule';
-        $this->par->_doRequest();
+        $this->_apiResource = '/servers/'. (int) $serverId .'/backup_schedule';
+        $this->_doRequest();
 
-	    if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-                || $this->par->_apiResponseCode == '203')) {
-            return $this->par->_apiResponse;
+	    if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+                || $this->_apiResponseCode == '203')) {
+            return $this->_apiResponse;
 	    }
 
         return false;
@@ -376,14 +382,14 @@ class Server {
             throw new Cloud_Exception ('Passed daily back-up parameter is not supported');
         }
 
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/backup_schedule';
-        $this->par->_apiJson = array ('backupSchedule' => array(
+        $this->_apiResource = '/servers/'. (int) $serverId .'/backup_schedule';
+        $this->_apiJson = array ('backupSchedule' => array(
                                     'enabled' => (bool) $isEnabled,
                                     'weekly' => (string) strtoupper($weekly),
                                     'daily' => (string) strtoupper($daily)));
-        $this->par->_doRequest(Cloud::METHOD_POST);
+        $this->_doRequest(self::METHOD_POST);
 
-	    if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '204') {
+	    if ($this->_apiResponseCode && $this->_apiResponseCode == '204') {
             return true;
 	    }
 
@@ -399,10 +405,10 @@ class Server {
      */
     public function deleteBackupSchedule ($serverId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/backup_schedule';
-        $this->par->_doRequest(Cloud::METHOD_DELETE);
+        $this->_apiResource = '/servers/'. (int) $serverId .'/backup_schedule';
+        $this->_doRequest(self::METHOD_DELETE);
 
-	    if ($this->par->_apiResponseCode && $this->_apiResponseCode == '204') {
+	    if ($this->_apiResponseCode && $this->_apiResponseCode == '204') {
             return true;
 	    }
 
@@ -434,8 +440,8 @@ class Server {
             }
         }
 
-        $this->par->_apiResource = '/servers';
-        $this->par->_apiJson = array ('server' => array(
+        $this->_apiResource = '/servers';
+        $this->_apiJson = array ('server' => array(
                                 'name' => $name,
                                 'imageId' => (int) $imageId,
                                 'flavorId' => (int) $flavorId,
@@ -446,21 +452,21 @@ class Server {
 
         if (is_array($this->_apiFiles) && !empty($this->_apiFiles)) {
             foreach ($this->_apiFiles as $file => $content) {
-                array_push($this->par->_apiJson['server']['personality'],
+                array_push($this->_apiJson['server']['personality'],
                    array('path' => $file, 'contents' => base64_encode($content)));
             }
         }
 
         if (is_numeric($groupId)) {
-			$this->par->_apiJson['server']['sharedIpGroupId'] = (int) $groupId;
+			$this->_apiJson['server']['sharedIpGroupId'] = (int) $groupId;
         }
 		
-		echo json_encode($this->par->_apiJson);
+		echo json_encode($this->_apiJson);
 
-        $this->par->_doRequest(Cloud::METHOD_POST);
+        $this->_doRequest(self::METHOD_POST);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
-            return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
+            return $this->_apiResponse;
         }
 
         return false;
@@ -488,13 +494,13 @@ class Server {
      */
     public function updateServer ($serverId, $name, $password)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId;
-        $this->par->_apiJson = array ('server' => array(
+        $this->_apiResource = '/servers/'. (int) $serverId;
+        $this->_apiJson = array ('server' => array(
                                     'name' => (string) $name,
                                     'adminPass' => (string) $password));
-        $this->par->_doRequest(Cloud::METHOD_PUT);
+        $this->_doRequest(self::METHOD_PUT);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -509,11 +515,11 @@ class Server {
      */
     public function deleteServer ($serverId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId;
-        $this->par->_doRequest(Cloud::METHOD_DELETE);
+        $this->_apiResource = '/servers/'. (int) $serverId;
+        $this->_doRequest(self::METHOD_DELETE);
 
         // If server was deleted
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -529,13 +535,13 @@ class Server {
      */
     public function rebuildServer ($serverId, $imageId)
     {
-        $this->par->_apiResource = '/servers/' . (int) $serverId .'/action';
-        $this->par->_apiJson = array ('rebuild' => array(
+        $this->_apiResource = '/servers/' . (int) $serverId .'/action';
+        $this->_apiJson = array ('rebuild' => array(
                                     'imageId' => (int) $imageId));
-        $this->par->_doRequest(Cloud::METHOD_PUT);
+        $this->_doRequest(self::METHOD_PUT);
 
         // If rebuild request is successful
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -550,13 +556,13 @@ class Server {
      */
     public function resizeServer ($serverId, $flavorId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/action';
-        $this->par->_apiJson = array ('resize' => array(
+        $this->_apiResource = '/servers/'. (int) $serverId .'/action';
+        $this->_apiJson = array ('resize' => array(
                                     'flavorId' => (int) $flavorId));
-        $this->par->_doRequest(Cloud::METHOD_PUT);
+        $this->_doRequest(self::METHOD_PUT);
 
         // If confirmation is successful
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -571,12 +577,12 @@ class Server {
      */
     public function confirmResize ($serverId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/action';
-        $this->par->_apiJson = array ('confirmResize' => '1');
-        $this->par->_doRequest(Cloud::METHOD_PUT);
+        $this->_apiResource = '/servers/'. (int) $serverId .'/action';
+        $this->_apiJson = array ('confirmResize' => '1');
+        $this->_doRequest(self::METHOD_PUT);
 
         // If confirmation is successful
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -591,12 +597,12 @@ class Server {
      */
     public function revertResize ($serverId)
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/action';
-        $this->par->_apiJson = array ('revertResize' => '1');
-        $this->par->_doRequest(Cloud::METHOD_PUT);
+        $this->_apiResource = '/servers/'. (int) $serverId .'/action';
+        $this->_apiJson = array ('revertResize' => '1');
+        $this->_doRequest(self::METHOD_PUT);
 
         // If revert is successful
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -612,13 +618,13 @@ class Server {
      */
     public function rebootServer ($serverId, $type = 'soft')
     {
-        $this->par->_apiResource = '/servers/'. (int) $serverId .'/action';
-        $this->par->_apiJson = array ('reboot' => array(
+        $this->_apiResource = '/servers/'. (int) $serverId .'/action';
+        $this->_apiJson = array ('reboot' => array(
                                     'type' => (string) strtoupper($type)));
-        $this->par->_doRequest(Cloud::METHOD_POST);
+        $this->_doRequest(self::METHOD_POST);
 
         // If reboot request was successfully recieved
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -628,35 +634,3 @@ class Server {
 
 /* Legacy Class for upgraders */
 if (!class_exists('Cloud')) require_once('Cloud.php');
-class Cloud_Server extends Cloud {
-	
-	public function getFlavor ($flavorId) { return $this->servers->getFlavor($flavorId); }
-	public function getFlavors ($isDetailed = false) { return $this->servers->getFlavors($isDetailed); }
-	public function createImage ($name, $serverId) { return $this->servers->createImage($name, $serverId); }
-	public function getImage ($imageId) { return $this->servers->getImage($imageId); }
-	public function getImages ($isDetailed = false) { return $this->servers->getImages($isDetailed); }
-	public function getServer ($serverId) { return $this->servers->getServer($serverId); }
-	public function getServers ($isDetailed = false) { return $this->servers->getServers($isDetailed); }
-	public function shareServerIp ($serverId, $serverIp, $groupId, $doConfigure = false) { return $this->servers->shareServerIp($serverId, $serverIp, $groupId, $doConfigure); }
-	public function unshareServerIp ($serverId, $serverIp) { return $this->servers->unshareServerIp($serverId, $serverIp); }
-	public function getServerIp ($serverId, $type = false) { return $this->servers->getServerIp($serverId, $type); }
-	public function addSharedIpGroup ($name, $serverId) { return $this->servers->addSharedIpGroup($name, $serverId); }
-	public function deleteSharedIpGroup ($groupId) { return $this->servers->deleteSharedIpGroup($groupId); }
-	public function getSharedIpGroup ($groupId) { return $this->servers->getSharedIpGroup($groupId); }
-	public function getSharedIpGroups ($isDetailed = false) { return $this->servers->getSharedIpGroups($isDetailed); }
-	public function getBackupSchedule ($serverId) { return $this->servers->getBackupSchedule($serverId); }
-	public function addBackupSchedule ($serverId, $weekly, $daily, $isEnabled = true) { return $this->servers->addBackupSchedule($serverId, $weekly, $daily, $isEnabled); }
-	public function deleteBackupSchedule ($serverId) { return $this->servers->deleteBackupSchedule($serverId); }
-	public function createServer ($name, $imageId, $flavorId, $groupId = false) { return $this->servers->createServer($name, $imageId, $flavorId, $groupId); }
-	public function addServerFile ($file, $content) { return $this->servers->addServerFile($file, $content); }
-	public function updateServer ($serverId, $name, $password) { return $this->servers->updateServer($serverId, $name, $password); }
-	public function deleteServer ($serverId) { return $this->servers->deleteServer($serverId); }
-	public function rebuildServer ($serverId, $imageId) { return $this->servers->rebuildServer($serverId, $imageId); }
-	public function resizeServer ($serverId, $flavorId) { return $this->servers->resizeServer($serverId, $flavorId); }
-	public function confirmResize ($serverId) { return $this->servers->confirmResize($serverId); }
-	public function revertResize ($serverId) { return $this->servers->revertResize($serverId); }
-	public function rebootServer ($serverId, $type = 'soft') { return $this->servers->rebootServer($serverId, $type); }
-	
-	public function getLimits () { return $this->getLimits(); }
-	
-}

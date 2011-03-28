@@ -24,38 +24,37 @@
  * @license bsd
  */
 
-class LoadBalancer {
+class Cloud_LoadBalancer extends Cloud {
 	
-	public $par;
+    protected $_apiBalancers;
+    protected $_apiNodes;
 	
-	protected $_apiBalancers;
-	protected $_apiNodes;
-	
-	function __construct()
-	{
+    function __construct()
+    {
+		call_user_func_array(array($this, 'parent::__construct'), func_get_args()); 
 		$this->_apiNodes = array();
-	}
+    }
 	
-	/**
+    /**
      * Lists current Loadbalancers
      *
      * @return mixed json string containing current servers or false on failure
      */
     public function getBalancers ()
     {
-        $this->par->_apiResource = '/loadbalancers.json'; // As of 25/03 API does not default to JSON on this command
-        $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_apiResource = '/loadbalancers.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200' || $this->par->_apiResponseCode == '203')) {
-            if (property_exists($this->par->_apiResponse, 'loadBalancers')) {
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
+            if (property_exists($this->_apiResponse, 'loadBalancers')) {
                 // Reset internal balancer array
                 $this->_apiBalancers = array();
-                foreach ($this->par->_apiResponse->loadBalancers as $balancer) {
+                foreach ($this->_apiResponse->loadBalancers as $balancer) {
                     $this->_apiBalancers[(int) $balancer->id]['name'] = (string) $balancer->name;
                 }
             }
 
-            return $this->par->_apiResponse;
+            return $this->_apiResponse;
         }
 
         return false;
@@ -68,18 +67,18 @@ class LoadBalancer {
      */
     public function getBalancer ($balancerId)
     {
-        $this->par->_apiResource = '/loadbalancers/'. (int) $balancerId . '.json'; // As of 25/03 API does not default to JSON on this command
-        $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_apiResource = '/loadbalancers/'. (int) $balancerId . '.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
         
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200' || $this->par->_apiResponseCode == '203')) {
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
             // Save balancer names to avoid creating duplicate balancers
-            if (property_exists($this->par->_apiResponse, 'loadBalancers')) {
-                $this->_apiBalancers[(int) $this->par->_apiResponse->server->id] =
-                    array('id' => (int) $this->par->_apiResponse->server->id,
-                            'name' => (string) $this->par->_apiResponse->server->name);
+            if (property_exists($this->_apiResponse, 'loadBalancers')) {
+                $this->_apiBalancers[(int) $this->_apiResponse->server->id] =
+                    array('id' => (int) $this->_apiResponse->server->id,
+                            'name' => (string) $this->_apiResponse->server->name);
             }
 
-            return $this->par->_apiResponse;
+            return $this->_apiResponse;
         }
 
         return false;
@@ -140,20 +139,20 @@ class LoadBalancer {
 			$Ips = array(array('id' => $virtualIp));
 		}
 
-        $this->par->_apiResource = '/loadbalancers';
-        $this->par->_apiJson = array ('loadBalancer' => array(
+        $this->_apiResource = '/loadbalancers';
+        $this->_apiJson = array ('loadBalancer' => array(
                                 'name' => $name,
                                 'port' => (string) $port,
                                 'protocol' => $protocol,
 								'virtualIps' => $Ips,
                                 'nodes' => $this->_apiNodes));
 
-        $this->par->_doRequest(Cloud::METHOD_POST, Cloud::RESOURCE_BALANCER);
+        $this->_doRequest(Cloud::METHOD_POST, Cloud::RESOURCE_BALANCER);
 
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
 			//Clear nodes
 			$this->_apiNodes = array();
-            return $this->par->_apiResponse;
+            return $this->_apiResponse;
         }
 
         return false;
@@ -167,11 +166,11 @@ class LoadBalancer {
      */
     public function deleteBalancer ($balancerId)
     {
-        $this->par->_apiResource = '/loadbalancers/'. (int) $balancerId;
-        $this->par->_doRequest(Cloud::METHOD_DELETE, Cloud::RESOURCE_BALANCER);
+        $this->_apiResource = '/loadbalancers/'. (int) $balancerId;
+        $this->_doRequest(Cloud::METHOD_DELETE, Cloud::RESOURCE_BALANCER);
 
         // If server was deleted
-        if ($this->par->_apiResponseCode && $this->par->_apiResponseCode == '202') {
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '202') {
             return true;
         }
 
@@ -186,12 +185,12 @@ class LoadBalancer {
      */
     public function getVirtualIPs ($balancerId)
     {
-        $this->par->_apiResource = '/loadbalancers/'. $balancerId . '/virtualips.json'; // As of 25/03 API does not default to JSON on this command
-        $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_apiResource = '/loadbalancers/'. $balancerId . '/virtualips.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-           	    || $this->par->_apiResponseCode == '202')) {
-        	return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+           	    || $this->_apiResponseCode == '202')) {
+        	return $this->_apiResponse;
         }
 
         return false;
@@ -205,12 +204,12 @@ class LoadBalancer {
      */
     public function getProtocols ()
     {
-        $this->par->_apiResource = '/loadbalancers/protocols';
-        $this->par->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
+        $this->_apiResource = '/loadbalancers/protocols';
+        $this->_doRequest(Cloud::METHOD_GET, Cloud::RESOURCE_BALANCER);
 
-        if ($this->par->_apiResponseCode && ($this->par->_apiResponseCode == '200'
-           	    || $this->par->_apiResponseCode == '203')) {
-        	return $this->par->_apiResponse;
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
+           	    || $this->_apiResponseCode == '203')) {
+        	return $this->_apiResponse;
         }
 
         return false;
