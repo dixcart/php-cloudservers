@@ -37,6 +37,10 @@ require_once('Server.php');
  * Cloud Load Balancers
  */
 require_once('LoadBalancer.php');
+/**
+ * Cloud DNS
+ */
+require_once('DNS.php');
 
 /**
  * Core Class which all Sub-Classes must extend from
@@ -56,6 +60,7 @@ abstract class Cloud {
     const RESOURCE_BALANCER = 1;
     const RESOURCE_STORAGE = 2;
     const RESOURCE_CDN = 3;
+    const RESOURCE_DNS = 4;
 
     private $_apiUser;
     private $_apiKey;
@@ -71,6 +76,8 @@ abstract class Cloud {
     private $_apiBalancerLocation;
     private $_apiBalancerUri = array('ORD' => 'https://ord.loadbalancers.api.rackspacecloud.com/v1.0', 'DFW' => 'https://dfw.loadbalancers.api.rackspacecloud.com/v1.0');
 
+    private $_apiDNSUri = array('UK' => 'https://lon.dns.api.rackspacecloud.com/v1.0/', 'US' => 'https://dns.api.rackspacecloud.com/v1.0/1234/');
+    
     private $_apiAgent = 'PHP Cloud Server client';
 
     protected $_apiResource;
@@ -100,7 +107,7 @@ abstract class Cloud {
 
         $this->_apiUser = $apiId;
         $this->_apiKey = $apiKey;
-	    $this->_apiLocation = $apiLocation;
+	$this->_apiLocation = $apiLocation;
         $this->_apiBalancerLocation = $apiBalancerLocation;
         $this->_acceptGzip = $acceptGzip;
 		
@@ -172,6 +179,9 @@ abstract class Cloud {
                 break;
             case self::RESOURCE_CDN:
                 $strURL = $this->_apiCDNUri.$this->_apiResource;
+                break;
+            case self::RESOURCE_DNS:
+                $strURL = $this->_apiDNSUri[$this->_apiLocation].$this->_apiAccount.$this->_apiResource;
                 break;
             default:
                 $strURL = $this->_apiServerUri.$this->_apiResource;
