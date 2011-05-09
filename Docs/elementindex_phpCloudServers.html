@@ -20,7 +20,7 @@
 	<a class="index-letter" href="elementindex_phpCloudServers.html#g">g</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#l">l</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#m">m</a>
-	<a class="index-letter" href="elementindex_phpCloudServers.html#p">p</a>
+	<a class="index-letter" href="elementindex_phpCloudServers.html#n">n</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#r">r</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#s">s</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#u">u</a>
@@ -34,13 +34,6 @@
 		<div style="clear: both"></div>
 	</div>
 	<dl>
-			<dt class="field">
-						<img src="media/images/Variable.png" alt="Variable" title="Variable" />
-			<span class="var-title">$_apiBackup</span>
-					</dt>
-		<dd class="index-item-body">
-			<div class="index-item-details"><a href="phpCloudServers/Cloud_Server.html#var$_apiBackup">Cloud_Server::$_apiBackup</a> in Server.php</div>
-					</dd>
 			<dt class="field">
 						<img src="media/images/Variable.png" alt="Variable" title="Variable" />
 			<span class="var-title">$_apiJson</span>
@@ -107,7 +100,7 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="phpCloudServers/Cloud_LoadBalancer.html#methodaddNode">Cloud_LoadBalancer::addNode()</a> in LoadBalancer.php</div>
-							<div class="index-item-description">Adds a node before creating a balancer</div>
+							<div class="index-item-description">Adds a node to a balancer, must use newNode to define the nodes to add</div>
 					</dd>
 			<dt class="field">
 						<img src="media/images/Method.png" alt="Method" title="Method" />
@@ -158,6 +151,14 @@
 					</dd>
 			<dt class="field">
 						<img src="media/images/Class.png" alt="Class" title="Class" />
+			Cloud_DNS
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_DNS.html">Cloud_DNS</a> in DNS.php</div>
+							<div class="index-item-description">DNS API implementation</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Class.png" alt="Class" title="Class" />
 			Cloud_Exception
 					</dt>
 		<dd class="index-item-body">
@@ -198,6 +199,14 @@
 					</dd>
 			<dt class="field">
 						<img src="media/images/Method.png" alt="Method" title="Method" />
+			<span class="method-title">createDomain</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_DNS.html#methodcreateDomain">Cloud_DNS::createDomain()</a> in DNS.php</div>
+							<div class="index-item-description">Creates a new domain with no records</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Method.png" alt="Method" title="Method" />
 			<span class="method-title">createImage</span>
 					</dt>
 		<dd class="index-item-body">
@@ -220,6 +229,13 @@
 		<div style="clear: both"></div>
 	</div>
 	<dl>
+			<dt class="field">
+						<img src="media/images/Page.png" alt="Page" title="Page" />
+			<span class="include-title">DNS.php</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/_Cloud---DNS.php.html">DNS.php</a> in DNS.php</div>
+					</dd>
 			<dt class="field">
 						<img src="media/images/Method.png" alt="Method" title="Method" />
 			<span class="method-title">deleteBackupSchedule</span>
@@ -333,6 +349,22 @@
 					</dd>
 			<dt class="field">
 						<img src="media/images/Method.png" alt="Method" title="Method" />
+			<span class="method-title">getDomain</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_DNS.html#methodgetDomain">Cloud_DNS::getDomain()</a> in DNS.php</div>
+							<div class="index-item-description">Returns details of a specific domain</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Method.png" alt="Method" title="Method" />
+			<span class="method-title">getDomains</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_DNS.html#methodgetDomains">Cloud_DNS::getDomains()</a> in DNS.php</div>
+							<div class="index-item-description">Returns list of all domain names on the account</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Method.png" alt="Method" title="Method" />
 			<span class="method-title">getFlavor</span>
 					</dt>
 		<dd class="index-item-body">
@@ -370,6 +402,22 @@
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="phpCloudServers/Cloud.html#methodgetLimits">Cloud::getLimits()</a> in Cloud.php</div>
 							<div class="index-item-description">Retrieves current API limits</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Method.png" alt="Method" title="Method" />
+			<span class="method-title">getNode</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_LoadBalancer.html#methodgetNode">Cloud_LoadBalancer::getNode()</a> in LoadBalancer.php</div>
+							<div class="index-item-description">Gets the details for a specific node on a specific balancer</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Method.png" alt="Method" title="Method" />
+			<span class="method-title">getNodes</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_LoadBalancer.html#methodgetNodes">Cloud_LoadBalancer::getNodes()</a> in LoadBalancer.php</div>
+							<div class="index-item-description">Get a list of nodes for a particular balancer</div>
 					</dd>
 			<dt class="field">
 						<img src="media/images/Method.png" alt="Method" title="Method" />
@@ -437,6 +485,13 @@
 					</dd>
 			<dt class="field">
 						<img src="media/images/Page.png" alt="Page" title="Page" />
+			<span class="include-title">getDomains.php</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/examples/_Examples---getDomains.php.html">getDomains.php</a> in getDomains.php</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Page.png" alt="Page" title="Page" />
 			<span class="include-title">getServers.php</span>
 					</dt>
 		<dd class="index-item-body">
@@ -501,19 +556,20 @@
 			<div class="index-item-details"><a href="phpCloudServers/Cloud.html#constMETHOD_PUT">Cloud::METHOD_PUT</a> in Cloud.php</div>
 					</dd>
 		</dl>
-	<a name="p"></a>
+	<a name="n"></a>
 	<div class="index-letter-section">
-		<div style="float: left" class="index-letter-title">p</div>
+		<div style="float: left" class="index-letter-title">n</div>
 		<div style="float: right"><a href="#top">top</a></div>
 		<div style="clear: both"></div>
 	</div>
 	<dl>
 			<dt class="field">
-						<img src="media/images/Variable.png" alt="Variable" title="Variable" />
-			<span class="var-title">$par</span>
+						<img src="media/images/Method.png" alt="Method" title="Method" />
+			<span class="method-title">newNode</span>
 					</dt>
 		<dd class="index-item-body">
-			<div class="index-item-details"><a href="phpCloudServers/Cloud_Server.html#var$par">Cloud_Server::$par</a> in Server.php</div>
+			<div class="index-item-details"><a href="phpCloudServers/Cloud_LoadBalancer.html#methodnewNode">Cloud_LoadBalancer::newNode()</a> in LoadBalancer.php</div>
+							<div class="index-item-description">Adds a node before creating a balancer</div>
 					</dd>
 		</dl>
 	<a name="r"></a>
@@ -560,6 +616,13 @@
 					</dt>
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="phpCloudServers/Cloud.html#constRESOURCE_CDN">Cloud::RESOURCE_CDN</a> in Cloud.php</div>
+					</dd>
+			<dt class="field">
+						<img src="media/images/Class Constant.png" alt="Class Constant" title="Class Constant" />
+			RESOURCE_DNS
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="phpCloudServers/Cloud.html#constRESOURCE_DNS">Cloud::RESOURCE_DNS</a> in Cloud.php</div>
 					</dd>
 			<dt class="field">
 						<img src="media/images/Class Constant.png" alt="Class Constant" title="Class Constant" />
@@ -656,14 +719,14 @@
 			<span class="const-title">US_API_ID</span>
 					</dt>
 		<dd class="index-item-body">
-			<div class="index-item-details"><a href="phpCloudServers/examples/_Examples---getServers.php.html#defineUS_API_ID">US_API_ID</a> in getServers.php</div>
+			<div class="index-item-details"><a href="phpCloudServers/examples/_Examples---getDomains.php.html#defineUS_API_ID">US_API_ID</a> in getDomains.php</div>
 					</dd>
 			<dt class="field">
 						<img src="media/images/Constant.png" alt="Constant" title="Constant" />
 			<span class="const-title">US_API_KEY</span>
 					</dt>
 		<dd class="index-item-body">
-			<div class="index-item-details"><a href="phpCloudServers/examples/_Examples---getServers.php.html#defineUS_API_KEY">US_API_KEY</a> in getServers.php</div>
+			<div class="index-item-details"><a href="phpCloudServers/examples/_Examples---getDomains.php.html#defineUS_API_KEY">US_API_KEY</a> in getDomains.php</div>
 					</dd>
 		</dl>
 
@@ -675,7 +738,7 @@
 	<a class="index-letter" href="elementindex_phpCloudServers.html#g">g</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#l">l</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#m">m</a>
-	<a class="index-letter" href="elementindex_phpCloudServers.html#p">p</a>
+	<a class="index-letter" href="elementindex_phpCloudServers.html#n">n</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#r">r</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#s">s</a>
 	<a class="index-letter" href="elementindex_phpCloudServers.html#u">u</a>
