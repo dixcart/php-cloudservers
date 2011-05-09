@@ -13,6 +13,22 @@ class Cloud_LoadBalancer extends Cloud {
 	
     private $_apiBalancers = array();
     private $_apiNodes = array();
+    
+    private $_apiNodeCondition = array(
+        'ENABLED',
+        'DISABLED',
+        'DRAINING'
+    );
+    private $_apiAlgorithms = array(
+        'LEAST_CONNECTIONS',
+        'RANDOM',
+        'ROUND_ROBIN',
+        'WEIGHTED_LEAST_CONNECTIONS',
+        'WEIGHTED_ROUND_ROBIN'
+    );
+    private $_apiPersistence = array(
+        'HTTP_COOKIE'
+    );
 	
     /**
      * Lists current Loadbalancers
@@ -91,13 +107,25 @@ class Cloud_LoadBalancer extends Cloud {
      * @param int $port external facing port balancer will use
      * @param string $protocol protocol for the balancer
      * @param string $virtualIP PUBLIC, SERVICENET or ID of existing IP
+     * @param string $algorithm Balancing algorithm to use
+     * @param bool $connectionLogging Enable Connection logging
+     * @param string $sessionPersistence HTTP_COOKIE is the only currently available option
      * @return mixed returns json string of balancer's configuration or false on failure
      */
-    public function createBalancer ($name, $port, $protocol, $virtualIp = "PUBLIC")
+    public function createBalancer ($name, $port, $protocol, $virtualIp = "PUBLIC", $algorithm = "RANDOM", $connectionLogging = false, $sessionPersistence = null)
     {
         // We have to have nodes set up to create a balancer
         if (count($this->_apiNodes) == 0) return false;
-		
+        
+        // Check the provided strings are suitable
+        if (!in_array((string) strtoupper($algorithm), $this->_apiAlgorithms)) {
+            throw new Cloud_Exception ('Passed algorithm is not supported');
+        }
+        if ($sessionPersistence != null && !in_array((string) strtoupper($sessionPersistence), $this->_apiPersistence)) {
+            throw new Cloud_Exception ('Passed persistence method is not supported');
+        }
+        if ($sessionPersistence == 'HTTP_COOKIE' && strtoupper($protocol) != 'HTTP') throw new Cloud_Exception ('HTTP_COOKIE persistence can only be used with HTTP protocol');
+
         // Since Rackspace automaticly removes all spaces/non alpha-numeric characters
         // let's do this on our end before submitting data
         $name = preg_replace("/[^a-zA-Z0-9-]/", '', (string) $name);
@@ -111,11 +139,11 @@ class Cloud_LoadBalancer extends Cloud {
                 throw new Cloud_Exception ('Balancer with name: '. $name .' already exists!');
             }
         }
-		
+	
         if ($virtualIp === "PUBLIC" || $virtualIp === "SERVICENET") {
-                $Ips = array(array('type' => $virtualIp));
+            $Ips = array(array('type' => $virtualIp));
         } else {
-                $Ips = array(array('id' => $virtualIp));
+            $Ips = array(array('id' => $virtualIp));
         }
 
         $this->_apiResource = '/loadbalancers';
@@ -124,7 +152,12 @@ class Cloud_LoadBalancer extends Cloud {
                                 'port' => (string) $port,
                                 'protocol' => $protocol,
 				'virtualIps' => $Ips,
+                                'algorithm' => $algorithm,
                                 'nodes' => $this->_apiNodes));
+        
+        if ($sessionPersistence != null) {
+            array_push($this->_apiJson['loadBalancer'], array('sessionPersistence' => $sessionPersistence));
+        }
 
         $this->_doRequest(self::METHOD_POST, self::RESOURCE_BALANCER);
 
