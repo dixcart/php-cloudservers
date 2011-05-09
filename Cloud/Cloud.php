@@ -257,8 +257,8 @@ abstract class Cloud {
                     $this->_doRequest($method, $type);
                 break;
                 case '400':
-					$resp = json_decode($this->_apiResponse, true);
-					$err = $resp['badRequest'];
+		    $resp = json_decode($this->_apiResponse, true);
+		    $err = $resp['badRequest'];
                     throw new Cloud_Exception('Code: ' . $err['code'] . '. Message: ' . $err['message'] . '. Detail: ' . $err['details']);
                 break;
                 case '404':
@@ -266,6 +266,9 @@ abstract class Cloud {
                 break;
                 case '403':
                     throw new Cloud_Exception('Access is denied for the given request.');
+                break;
+                case '409':
+                    throw new Cloud_Exception('Domain already exists.');
                 break;
                 case '413':
                     throw new Cloud_Exception('The server is refusing to process a request because the request entity is larger than the server is willing or able to process.');
