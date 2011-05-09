@@ -76,7 +76,7 @@ abstract class Cloud {
     private $_apiBalancerLocation;
     private $_apiBalancerUri = array('ORD' => 'https://ord.loadbalancers.api.rackspacecloud.com/v1.0', 'DFW' => 'https://dfw.loadbalancers.api.rackspacecloud.com/v1.0');
 
-    private $_apiDNSUri = array('UK' => 'https://lon.dns.api.rackspacecloud.com/v1.0/', 'US' => 'https://dns.api.rackspacecloud.com/v1.0/1234/');
+    private $_apiDNSUri = array('UK' => 'https://lon.dns.api.rackspacecloud.com/v1.0', 'US' => 'https://dns.api.rackspacecloud.com/v1.0');
     
     private $_apiAgent = 'PHP Cloud Server client';
 
