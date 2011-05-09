@@ -51,5 +51,28 @@ class Cloud_DNS extends Cloud {
         return false;
     }
     
+    /**
+     * Creates a new domain with no records
+     * 
+     * @param string $name Domain name
+     * @param string $email Email address for admin, defaults to hostmaster@$name
+     * @return mixed JSON string of domain details or false on error
+     */
+    public function createDomain($name, $email = ''){
+        if ($email == '') $email = 'hostmaster@'.$name;
+        $this->_apiResource = '/domains';
+        $this->_apiJson = array ('domains' => array(
+                                    'domain' => array(array(
+                                        'name' => $name,
+                                        'emailAddress' => $email
+                                    ))));
+        $this->_doRequest(self::METHOD_POST, self::RESOURCE_DNS);
+
+        if ($this->_apiResponseCode && $this->_apiResponseCode == '200') {
+        	return $this->_apiResponse;
+        }
+
+        return false;        
+    }
 }
 ?>
