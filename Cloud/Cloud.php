@@ -66,7 +66,7 @@ abstract class Cloud {
     private $_apiKey;
     private $_apiToken;
     private $_apiAccount;
-	
+  
     private $_apiServerUri;
     private $_apiStorageUri;
     private $_apiCDNUri;
@@ -107,10 +107,10 @@ abstract class Cloud {
 
         $this->_apiUser = $apiId;
         $this->_apiKey = $apiKey;
-	$this->_apiLocation = $apiLocation;
+        $this->_apiLocation = $apiLocation;
         $this->_apiBalancerLocation = $apiBalancerLocation;
         $this->_acceptGzip = $acceptGzip;
-		
+    
     }
 
     /**
@@ -166,7 +166,7 @@ abstract class Cloud {
         $headers = array(
             sprintf("%s: %s", 'X-Auth-Token', $this->_apiToken),
             sprintf("%s: %s", 'Content-Type', 'application/json'));
-		
+    
         //Enable GZip encoding
         if ($this->_acceptGzip) curl_setopt($curl, CURLOPT_ENCODING, "gzip");
 
@@ -195,7 +195,8 @@ abstract class Cloud {
             case self::METHOD_POST:
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->_apiJson));
-		if ($this->_enableDebug) echo '<hr>', json_encode($this->_apiJson), '<hr>';
+                $this->debug('<hr>', json_encode($this->_apiJson), '<hr>');
+                
             break;
             case self::METHOD_PUT:
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -218,28 +219,25 @@ abstract class Cloud {
             break;
         }
 
-	if ($this->_enableDebug) echo "<hr>url=", $strURL, "<hr>";
+        $this->debug("<hr>url=", $strURL, "<hr>");
 
-	curl_setopt($curl, CURLOPT_URL, $strURL);
+        curl_setopt($curl, CURLOPT_URL, $strURL);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_USERAGENT, $this->_apiAgent);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         // If debug is enabled we will output CURL data to screen
-        if ($this->_enableDebug) {
-            var_dump($headers);
+        $this->debug(print_r($headers, true));
+        if($this->_enableDebug)
             curl_setopt($curl, CURLOPT_VERBOSE, 1);
-            echo("<hr>");
-        }
+        $this->debug("<hr>");
 
         $this->_apiResponse = curl_exec($curl);
 
         // Also for debugging purposes output response we got
-        if ($this->_enableDebug) {
-            var_dump($this->_apiResponse);
-        }
+        $this->debug(print_r($this->_apiResponse, true));
 
         //if (curl_errno($curl) > 0) {
         //    throw new Cloud_Exception('Unable to process this request. curl err: ' . curl_errno($curl));
@@ -257,8 +255,14 @@ abstract class Cloud {
                     $this->_doRequest($method, $type);
                 break;
                 case '400':
-		    $resp = json_decode($this->_apiResponse, true);
-		    $err = $resp['badRequest'];
+                    $resp = json_decode($this->_apiResponse, true);
+                    if(isset($resp['badRequest'])) {
+                      $err = $resp['badRequest'];
+                    }
+                    else if(isset($resp['cloudServersFault'])) {
+                      $err = $resp['cloudServersFault'];
+                    }
+                    
                     throw new Cloud_Exception('Code: ' . $err['code'] . '. Message: ' . $err['message'] . '. Detail: ' . $err['details']);
                 break;
                 case '404':
@@ -348,6 +352,13 @@ abstract class Cloud {
     public function disableDebug()
     {
         $this->_enableDebug = false;
+    }
+    
+    private function debug($output) 
+    {
+        if($this->_enableDebug) {
+          echo $output;
+        }
     }
 
     /**
