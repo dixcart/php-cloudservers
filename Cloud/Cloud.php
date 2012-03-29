@@ -262,6 +262,9 @@ abstract class Cloud {
                     else if(isset($resp['cloudServersFault'])) {
                       $err = $resp['cloudServersFault'];
                     }
+                    else {
+                      $err = $resp;
+                    }
                     
                     throw new Cloud_Exception('Code: ' . $err['code'] . '. Message: ' . $err['message'] . '. Detail: ' . $err['details']);
                 break;
