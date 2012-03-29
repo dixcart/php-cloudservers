@@ -37,7 +37,7 @@ class Cloud_LoadBalancer extends Cloud {
      */
     public function getBalancers ()
     {
-        $this->_apiResource = '/loadbalancers.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiResource = '/loadbalancers.json'; 
         $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
@@ -62,7 +62,7 @@ class Cloud_LoadBalancer extends Cloud {
      */
     public function getBalancer ($balancerId)
     {
-        $this->_apiResource = '/loadbalancers/'. (int) $balancerId . '.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiResource = '/loadbalancers/'. (int) $balancerId . '.json'; 
         $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
         
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '203')) {
@@ -71,6 +71,111 @@ class Cloud_LoadBalancer extends Cloud {
                 $this->_apiBalancers[(int) $this->_apiResponse->server->id] =
                     array('id' => (int) $this->_apiResponse->server->id,
                             'name' => (string) $this->_apiResponse->server->name);
+            }
+
+            return $this->_apiResponse;
+        }
+
+        return false;
+    }
+    
+    /**
+     * The load balancer usage reports provide a view of all transfer activity, 
+     * average number of connections, and number of virtual IPs associated with 
+     * the load balancing service. Current usage represents all usage recorded 
+     * within the preceding 24 hours. Values for both incomingTransfer and 
+     * outgoingTransfer are expressed in bytes transferred. The optional 
+     * startTime and endTime parameters can be used to filter all usage. If the 
+     * startTime parameter is supplied but the endTime parameter is not, then 
+     * all usage beginning with the startTime will be provided. Likewise, if the 
+     * endTime parameter is supplied but the startTime parameter is not, then 
+     * all usage will be returned up to the endTime specified. 
+     *
+     * @param type $balancerId 
+     * @param boolean $current 	List current all usage recorded within the preceding 24 hours. If true time parameters will be ignored
+     * @param type $startTime List historical usage, usage beginning with the startTime will be provided. Date format doesn't matter as it will be converted to the right format
+     * @param type $endTime List historical usage, all usage will be returned up to the endTime specified. Date format doesn't matter as it will be converted to the right format
+     * @return mixed json string containing usage report.
+     */
+    public function getUsageReport ($balancerId, $current = false, $startTime = null, $endTime = null)
+    {
+        $this->_apiResource = '/loadbalancers/'. (int) $balancerId . '/usage';
+      
+        if($current) {
+            $this->_apiResource .= '/current.json';
+        }
+        else if(isset($startTime) && !isset($endTime)) {
+            $this->_apiResource .= '.json?startTime=' . date('Y-m-d', $startTime);
+        }
+        else if(!isset($startTime) && isset($endTime)) {
+            $this->_apiResource .= '.json?endTime=' . date('Y-m-d', $endTime);
+        }
+        else if(isset($startTime) && isset($endTime)) {
+            $this->_apiResource .= 
+                  '.json?startTime=' . date('Y-m-d', $startTime) .
+                      '&endTime=' . date('Y-m-d', $endTime);
+        }
+        else {
+            $this->_apiResource .= '.json';
+        }
+        
+        $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
+        
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200')) {
+            
+            if (!property_exists($this->_apiResponse, 'loadBalancerUsageRecords')) {
+                // We may have gotten an empty response? 
+                // This may happen if we are using the wrong data center
+            }
+
+            return $this->_apiResponse;
+        }
+
+        return false;
+    }
+    
+    
+    /**
+     * The load balancer usage reports provide a view of all transfer activity, 
+     * average number of connections, and number of virtual IPs associated with 
+     * the load balancing service. The optional startTime and endTime parameters 
+     * can be used to filter all usage. If the startTime parameter is supplied 
+     * but the endTime parameter is not, then all usage beginning with the 
+     * startTime will be provided. Likewise, if the endTime parameter is 
+     * supplied but the startTime parameter is not, then all usage will be 
+     * returned up to the endTime specified. 
+     *
+     * @param type $balancerId 
+     * @param type $startTime List historical usage, usage beginning with the startTime will be provided. Date format doesn't matter as it will be converted to the right format
+     * @param type $endTime List historical usage, all usage will be returned up to the endTime specified. Date format doesn't matter as it will be converted to the right format
+     * @return mixed json string containing usage report.
+     */
+    public function getAccountUsageReport($startTime = null, $endTime = null) {
+        
+      $this->_apiResource = '/loadbalancers/usage';
+        
+        if(isset($startTime) && !isset($endTime)) {
+            $this->_apiResource .= '.json?startTime=' . date('Y-m-d', $startTime);
+        }
+        else if(!isset($startTime) && isset($endTime)) {
+            $this->_apiResource .= '.json?endTime=' . date('Y-m-d', $endTime);
+        }
+        else if(isset($startTime) && isset($endTime)) {
+            $this->_apiResource .= 
+                  '.json?startTime=' . date('Y-m-d', $startTime) .
+                      '&endTime=' . date('Y-m-d', $endTime);
+        }
+        else {
+            $this->_apiResource .= '.json';
+        }
+        
+        $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
+        
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200')) {
+            
+            if (!property_exists($this->_apiResponse, 'loadBalancerUsages')) {
+                // We may have gotten an empty response? 
+                // This may happen if we are using the wrong data center
             }
 
             return $this->_apiResponse;
@@ -151,7 +256,7 @@ class Cloud_LoadBalancer extends Cloud {
                                 'name' => $name,
                                 'port' => (string) $port,
                                 'protocol' => $protocol,
-				'virtualIps' => $Ips,
+                                'virtualIps' => $Ips,
                                 'algorithm' => $algorithm,
                                 'nodes' => $this->_apiNodes));
         
@@ -196,7 +301,7 @@ class Cloud_LoadBalancer extends Cloud {
      * @return mixed JSON node details or false
      */
     public function getNodes($balancerId) {
-        $this->_apiResource = '/loadbalancers/'.$balancerId.'/nodes.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiResource = '/loadbalancers/'.$balancerId.'/nodes.json'; 
         $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '202')) {
@@ -214,7 +319,7 @@ class Cloud_LoadBalancer extends Cloud {
      * @return mixed JSON details of specific node or false on error 
      */
     public function getNode($balancerId, $nodeId) {
-        $this->_apiResource = '/loadbalancers/'.$balancerId.'/nodes/'.$nodeId.'.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiResource = '/loadbalancers/'.$balancerId.'/nodes/'.$nodeId.'.json'; 
         $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' || $this->_apiResponseCode == '202')) {
@@ -234,7 +339,7 @@ class Cloud_LoadBalancer extends Cloud {
         //Must have added nodes using newNode
         if (count($this->_apiNodes) == 0) return false;
         
-        $this->_apiResource = '/loadbalancers/'.$balanerId.'/nodes.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiResource = '/loadbalancers/'.$balanerId.'/nodes.json'; 
         $this->_apiJson = array ('nodes' => $this->_apiNodes);
 
         $this->_doRequest(self::METHOD_POST, self::RESOURCE_BALANCER);
@@ -259,7 +364,7 @@ class Cloud_LoadBalancer extends Cloud {
      */
     public function getVirtualIPs ($balancerId)
     {
-        $this->_apiResource = '/loadbalancers/'. $balancerId . '/virtualips.json'; // As of 25/03 API does not default to JSON on this command
+        $this->_apiResource = '/loadbalancers/'. $balancerId . '/virtualips.json'; 
         $this->_doRequest(self::METHOD_GET, self::RESOURCE_BALANCER);
 
         if ($this->_apiResponseCode && ($this->_apiResponseCode == '200'
