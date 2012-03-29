@@ -145,7 +145,6 @@ class Cloud_LoadBalancer extends Cloud {
      * supplied but the startTime parameter is not, then all usage will be 
      * returned up to the endTime specified. 
      *
-     * @param type $balancerId 
      * @param type $startTime List historical usage, usage beginning with the startTime will be provided. Date format doesn't matter as it will be converted to the right format
      * @param type $endTime List historical usage, all usage will be returned up to the endTime specified. Date format doesn't matter as it will be converted to the right format
      * @return mixed json string containing usage report.
