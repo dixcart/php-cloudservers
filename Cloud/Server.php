@@ -91,8 +91,7 @@ class Cloud_Server extends Cloud {
                                     'name' => (string) $name));
         $this->_doRequest(self::METHOD_POST);
 
-        if ($this->_apiResponseCode && ($this->_apiResponseCode == '200' 
-                || $this->_apiResponseCode == '203')) {
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '202')) {
         	return $this->_apiResponse;
         }
 
