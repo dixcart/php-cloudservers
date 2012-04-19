@@ -91,7 +91,7 @@ class Cloud_Server extends Cloud {
                                     'name' => (string) $name));
         $this->_doRequest(self::METHOD_POST);
 
-        if ($this->_apiResponseCode && $this->_apiResponseCode == '200') {
+        if ($this->_apiResponseCode && ($this->_apiResponseCode == '202')) {
         	return $this->_apiResponse;
         }
 
@@ -434,10 +434,10 @@ class Cloud_Server extends Cloud {
         }
 
         if (is_numeric($groupId)) {
-			$this->_apiJson['server']['sharedIpGroupId'] = (int) $groupId;
+			      $this->_apiJson['server']['sharedIpGroupId'] = (int) $groupId;
         }
 		
-		echo json_encode($this->_apiJson);
+		    echo json_encode($this->_apiJson);
 
         $this->_doRequest(self::METHOD_POST);
 
